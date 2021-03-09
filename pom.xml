@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.climacell</groupId>
-	<artifactId>weather_app</artifactId>
+	<artifactId>weather-app-exercise</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>weather_app</name>
+	<name>weather-app-exercise</name>
 	<description>Weather app</description>
 	<properties>
 		<java.version>1.8</java.version>
@@ -55,7 +55,7 @@
 						</exclude>
 					</excludes>
 				</configuration>
-			</plugin>
+			</plugin> 
 		</plugins>
 	</build>
 
