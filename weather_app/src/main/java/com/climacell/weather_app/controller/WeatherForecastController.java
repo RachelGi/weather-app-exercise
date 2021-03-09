@@ -13,10 +13,10 @@ import com.climacell.weather_app.model.Weather;
 public class WeatherForecastController {
 
 	@GetMapping("/weather/data")
-	private List<Weather> retrieveWeatherForecastByLocation(@PathVariable double lat, @PathVariable double lon ) {
+	private String printWelcom( ) {
 		
 		
-		return null;
+		return "welcome";
 	}
 	
 	
