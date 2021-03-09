@@ -12,6 +12,12 @@ import com.climacell.weather_app.model.Weather;
 @RestController
 public class WeatherForecastController {
 
+	@GetMapping("/weather/data")
+	private List<Weather> retrieveWeatherForecastByLocation(@PathVariable double lat, @PathVariable double lon ) {
+		
+		
+		return null;
+	}
 	
 	
 	@GetMapping("/weather/data/{lat}/{lon}")
