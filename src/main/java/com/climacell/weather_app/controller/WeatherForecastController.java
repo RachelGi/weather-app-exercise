@@ -20,14 +20,14 @@ public class WeatherForecastController {
 	}
 	
 	
-	@GetMapping("/weather/data/{lat}/{lon}")
+	@GetMapping("/weather/data/{lat}/{lon}") //TODO use @RequestParams
 	private List<Weather> retrieveWeatherForecastByLocation(@PathVariable double lat, @PathVariable double lon ) {
 		
 		
 		return null;
 	}
 	
-	@GetMapping("/weather/summarize/{lat}/{lon}")
+	@GetMapping("/weather/summarize/{lat}/{lon}") //TODO use @RequestParams
 	private HashMap<StatisticField,Weather> retrieveWeatherForecastSummarizeByLocation(@PathVariable double lat, @PathVariable double lon ) {
 		
 		
