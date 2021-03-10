@@ -3,17 +3,22 @@ package com.climacell.weather_app.model;
 import java.sql.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-//@Entity
+@Entity
 @Data
+@AllArgsConstructor
 public  class Weather { //TODO @entity
-	
-	private double longitude; //TODO indx ? 
-	private double latitude; //TODO idx?
+	@Id
+    private Integer id; //TODO
+	private Double longitude; //TODO indx ? 
+	private Double latitude; //TODO idx?
 	private Date forecastTime; //TODO check if import sql util
-	private double temperature;
-	private double precipitationRate;
+	private Double temperature;
+	private Double precipitationRate;
 
 }
