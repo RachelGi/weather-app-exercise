@@ -31,6 +31,12 @@ public class WeatherForecastController {
 		return "welcome";
 	}
 
+	@GetMapping("/weathers")
+	private List<Weather> printAllWeather( ) {
+
+		return weatherRepository.findAll( );
+	}
+
 
 	@GetMapping("/weather/data/{lat}/{lon}") //TODO use @RequestParams
 	private List<Weather> retrieveWeatherForecastByLocation(@PathVariable double lat, @PathVariable double lon ) {
