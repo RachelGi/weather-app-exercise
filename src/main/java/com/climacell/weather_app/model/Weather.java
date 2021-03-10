@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 
 import lombok.Data;
 
-@Entity
+//@Entity
 @Data
 public  class Weather { //TODO @entity
 	
