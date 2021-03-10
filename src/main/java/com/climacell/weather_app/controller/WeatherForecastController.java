@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.climacell.weather_app.model.Location;
 import com.climacell.weather_app.model.Weather;
 import com.climacell.weather_app.repository.WeatherRepository;
 
@@ -23,8 +24,10 @@ public class WeatherForecastController {
 	@GetMapping("/")
 	private String printWelcome( ) {
 		Weather weather =  new Weather();
-		weather.setLatitude(3.0);
-		weather.setLongitude(2.0);
+		Location loc = new Location();
+		loc.setLatitude(2.0);
+		loc.setLongitude(3.4);
+		weather.setLocation(loc);
 		weather.setTemperature(2.54);
 		weatherRepository.save(weather );
 
