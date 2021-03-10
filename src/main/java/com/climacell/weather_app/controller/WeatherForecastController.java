@@ -15,31 +15,35 @@ import com.climacell.weather_app.repository.WeatherRepository;
 @RestController
 public class WeatherForecastController {
 
-	
+
 	@Autowired
 	private WeatherRepository weatherRepository;
-	
-	
+
+
 	@GetMapping("/")
 	private String printWelcome( ) {
-		weatherRepository.save(new Weather(1, 1.0, 2.0, new Date(0), 30.5, 20.2));
-		
+		Weather weather =  new Weather();
+		weather.setLatitude(3.0);
+		weather.setLongitude(2.0);
+		weather.setTemperature(2.54);
+		weatherRepository.save(weather );
+
 		return "welcome";
 	}
-	
-	
+
+
 	@GetMapping("/weather/data/{lat}/{lon}") //TODO use @RequestParams
 	private List<Weather> retrieveWeatherForecastByLocation(@PathVariable double lat, @PathVariable double lon ) {
-		
-		
+
+
 		return null;
 	}
-	
+
 	@GetMapping("/weather/summarize/{lat}/{lon}") //TODO use @RequestParams
 	private HashMap<StatisticField,Weather> retrieveWeatherForecastSummarizeByLocation(@PathVariable double lat, @PathVariable double lon ) {
-		
-		
+
+
 		return null;
 	}
-	
+
 }
