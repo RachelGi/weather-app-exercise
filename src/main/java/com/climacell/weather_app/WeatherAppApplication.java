@@ -15,15 +15,12 @@ public class WeatherAppApplication {
 	MongoDatabaseFactory mongoTemplateFactory;
 
 	public static void main(String[] args) {
-		System.out.println("=========Start=========");
 		SpringApplication.run(WeatherAppApplication.class, args);
+		System.out.println("=========Start=========");
 	}
 
 	@Bean 
 	public MongoTemplate mongoTemplate(MongoDatabaseFactory mongoDbFactory,MongoMappingContext context) { 
-
-//		MappingMongoConverter converter = new MappingMongoConverter(new DefaultDbRefResolver(mongoDbFactory), context); 
-//		converter.setTypeMapper(new DefaultMongoTypeMapper(null)); converter.setMapKeyDotReplacement("[@]"); 
 		MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory); 
 		return mongoTemplate; 
 	}

@@ -19,7 +19,7 @@ public class WeatherRepositoryImpl implements WeatherRepositoryCustom{
 	@Override
 	public List<Weather> findByLongitudeAndLatitude(Double longitude, Double latitude) {
 		Query q = new Query(); 
-		q.withHint("location_index");
+//		q.withHint("location_index");
 		q.addCriteria(new Criteria().andOperator(Criteria.where("longitude").is(longitude),Criteria.where("latitude").is(latitude)));
 		return mongoTemplate.find(q, Weather.class);
 	}
