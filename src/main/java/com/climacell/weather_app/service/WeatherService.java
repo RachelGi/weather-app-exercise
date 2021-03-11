@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.climacell.weather_app.controller.StatisticField;
 import com.climacell.weather_app.exception.NoDataFoundException;
-import com.climacell.weather_app.model.Location;
 import com.climacell.weather_app.model.Weather;
 import com.climacell.weather_app.repository.WeatherRepository;
 
@@ -25,16 +24,16 @@ public class WeatherService {
 
 	}
 
-	public List<Weather> retrieveWeathersAtLocation(Location location)throws NoDataFoundException {
-		return weatherRepository.findByLongitudeAndLatitude(location.getLongitude(), location.getLatitude());
+	public List<Weather> retrieveWeathersAtLocation(double longitude, double latitude)throws NoDataFoundException {
+		return weatherRepository.findByLongitudeAndLatitude(longitude, latitude);
 	}
 
-	public HashMap<StatisticField, Weather> retrieveSummarizeWeathersAtLocation(Location location) throws NoDataFoundException {
+	public HashMap<StatisticField, Weather> retrieveSummarizeWeathersAtLocation(double longitude, double latitude) throws NoDataFoundException {
 		HashMap<StatisticField, Weather> summarizeDataMap = new HashMap<>(); 
 		
-		summarizeDataMap.put(StatisticField.MIN, weatherRepository.getMinWeatherAtLocation(location.getLongitude(), location.getLatitude()));
-		summarizeDataMap.put(StatisticField.MAX, weatherRepository.getMaxWeatherAtLocation(location.getLongitude(), location.getLatitude()));
-		summarizeDataMap.put(StatisticField.AVG, weatherRepository.getAverageWeatherAtLocation(location.getLongitude(), location.getLatitude()));
+		summarizeDataMap.put(StatisticField.MIN, weatherRepository.getMinWeatherAtLocation(longitude, latitude));
+		summarizeDataMap.put(StatisticField.MAX, weatherRepository.getMaxWeatherAtLocation(longitude, latitude));
+		summarizeDataMap.put(StatisticField.AVG, weatherRepository.getAverageWeatherAtLocation(longitude, latitude));
 
 		
 		return summarizeDataMap;

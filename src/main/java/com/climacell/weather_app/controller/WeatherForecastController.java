@@ -46,21 +46,21 @@ public class WeatherForecastController {
 
 
 	@GetMapping("/weather/data") //TODO use @RequestParams
-	private List<Weather> retrieveWeatherForecastByLocation(@RequestParam Location location, HttpServletResponse response ) throws IOException { //@PathVariable double lat, @PathVariable double lon,
+	private List<Weather> retrieveWeatherForecastByLocation(@RequestParam Double latitude, @RequestParam Double longitude, HttpServletResponse response ) throws IOException { //@PathVariable double lat, @PathVariable double lon,
 		try {
-			weatherService.retrieveWeathersAtLocation(location);
+			weatherService.retrieveWeathersAtLocation(longitude, latitude);
 		} catch (NoDataFoundException e) {
-			response.sendError(HttpStatus.NOT_FOUND.value(), "No Weather forcast for location "+ location.toString()); //TODO check if NO_CONTENT
+			response.sendError(HttpStatus.NOT_FOUND.value(), "No Weather forcast for location "+ + longitude + " " + latitude); //TODO check if NO_CONTENT
 		}
 		return null;
 	}
 
 	@GetMapping("/weather/summarize") //TODO use @RequestParams
-	private HashMap<StatisticField,Weather> retrieveWeatherForecastSummarizeByLocation(@RequestParam Location location, HttpServletResponse response) throws IOException{
+	private HashMap<StatisticField,Weather> retrieveWeatherForecastSummarizeByLocation(@RequestParam Double latitude, @RequestParam Double longitude,HttpServletResponse response) throws IOException{
 		try {
-			weatherService.retrieveSummarizeWeathersAtLocation(location);
+			weatherService.retrieveSummarizeWeathersAtLocation(longitude, latitude);
 		} catch (NoDataFoundException e) {
-			response.sendError(HttpStatus.NOT_FOUND.value(), "No Weather forcast for location "+ location.toString()); //TODO check if NO_CONTENT
+			response.sendError(HttpStatus.NOT_FOUND.value(), "No Weather forcast for location "+ longitude + " " +  latitude); //TODO check if NO_CONTENT
 		}
 		return null;
 	}
