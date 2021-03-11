@@ -40,7 +40,8 @@ public class WeatherForecastController {
 
 	@GetMapping("/weathers")
 	private List<Weather> printAllWeather( ) {
-		return weatherRepository.findAll( );
+//		return weatherRepository.findAll( );
+		return weatherRepository.findByAllUsingIdx();
 	}
 
 

@@ -13,4 +13,7 @@ public interface WeatherRepositoryCustom{
 	public Weather getMaxWeatherAtLocation(Double longitude, Double latitude);
 
 	public Weather getAverageWeatherAtLocation(Double longitude, Double latitude);
+	
+	public List<Weather> findByAllUsingIdx();
+
 }

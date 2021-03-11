@@ -42,6 +42,13 @@ public class WeatherRepositoryImpl implements WeatherRepositoryCustom{
 		return null;
 	}
 
+	@Override
+	public List<Weather> findByAllUsingIdx() {
+		Query q = new Query(); 
+		q.withHint("location_index"); //TODO...
+		return mongoTemplate.findAll( Weather.class);
+	}
+
 
 
 }
