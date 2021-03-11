@@ -44,7 +44,7 @@ public class WeatherForecastController {
 	}
 
 
-	@GetMapping("/weather/data/{lat}/{lon}") //TODO use @RequestParams
+	@GetMapping("/weather/data") //TODO use @RequestParams
 	private List<Weather> retrieveWeatherForecastByLocation(@RequestParam Location location, HttpServletResponse response ) throws IOException { //@PathVariable double lat, @PathVariable double lon,
 		try {
 			weatherService.retrieveWeathersAtLocation(location);
@@ -54,7 +54,7 @@ public class WeatherForecastController {
 		return null;
 	}
 
-	@GetMapping("/weather/summarize/{lat}/{lon}") //TODO use @RequestParams
+	@GetMapping("/weather/summarize") //TODO use @RequestParams
 	private HashMap<StatisticField,Weather> retrieveWeatherForecastSummarizeByLocation(@RequestParam Location location, HttpServletResponse response) throws IOException{
 		try {
 			weatherService.retrieveSummarizeWeathersAtLocation(location);
