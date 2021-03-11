@@ -10,9 +10,5 @@ import com.climacell.weather_app.model.Weather;
 @Repository
 public interface WeatherRepository extends MongoRepository<Weather, Integer> , WeatherRepositoryCustom{
 
-	public List<Weather> findByLongitudeAndLatitude(Double longitude, Double latitude);
-
-
-
 
 }
