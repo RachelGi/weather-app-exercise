@@ -50,7 +50,7 @@ public class WeatherService {
 	                .withSkipLines(1)
 	                .build()
 	                .parse();
-		 System.out.println("=====================PARRSE ! ok ");
+		 System.out.println("=====================PARRSE  ! ok ");
 		 System.out.println("=====================SAVE1");
 		 weatherRepository.saveAll(beans);
 		 System.out.println("=====================SAVE1 DONE");
