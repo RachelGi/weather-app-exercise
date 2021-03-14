@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.climacell.weather_app.exception.NoDataFoundException;
 import com.climacell.weather_app.model.Location;
 import com.climacell.weather_app.model.Weather;
+import com.climacell.weather_app.model.WeatherSummarize;
 import com.climacell.weather_app.repository.WeatherRepository;
 import com.climacell.weather_app.service.WeatherService;
 
@@ -39,30 +40,32 @@ public class WeatherForecastController {
 
 
 	@GetMapping("/weathers")
-	private List<Weather> printAllWeather( ) {
-//		return weatherRepository.findAll( );
-		return weatherRepository.findByAllUsingIdx();
+	private List<Weather> printAllWeather( ) throws Exception{
+		weatherService.importWeatherDataFromCSVFile();
+		return weatherRepository.findAll( );
 	}
 
 
 	@GetMapping("/weather/data")  //TODO use Location
 	private List<Weather> retrieveWeatherForecastByLocation(@RequestParam Double latitude, @RequestParam Double longitude, HttpServletResponse response ) throws IOException { //@PathVariable double lat, @PathVariable double lon,
+		List<Weather> weatherList = null; 
 		try {
-			weatherService.retrieveWeathersAtLocation(longitude, latitude);
+			weatherList = weatherService.retrieveWeathersAtLocation(longitude, latitude);
 		} catch (NoDataFoundException e) {
 			response.sendError(HttpStatus.NOT_FOUND.value(), "No Weather forcast for location "+ + longitude + " " + latitude); //TODO check if NO_CONTENT
 		}
-		return null;
+		return weatherList;
 	}
 
 	@GetMapping("/weather/summarize") //TODO use Location
-	private HashMap<StatisticField,Weather> retrieveWeatherForecastSummarizeByLocation(@RequestParam Double latitude, @RequestParam Double longitude,HttpServletResponse response) throws IOException{
+	private HashMap<StatisticField,WeatherSummarize> retrieveWeatherForecastSummarizeByLocation(@RequestParam Double latitude, @RequestParam Double longitude,HttpServletResponse response) throws IOException{
+		HashMap<StatisticField,WeatherSummarize> summarizeWeather = null; 
 		try {
-			weatherService.retrieveSummarizeWeathersAtLocation(longitude, latitude);
+			summarizeWeather = weatherService.retrieveSummarizeWeathersAtLocation(longitude, latitude);
 		} catch (NoDataFoundException e) {
 			response.sendError(HttpStatus.NOT_FOUND.value(), "No Weather forcast for location "+ longitude + " " +  latitude); //TODO check if NO_CONTENT
 		}
-		return null;
+		return summarizeWeather;
 	}
 
 }
