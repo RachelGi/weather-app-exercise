@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,22 +43,22 @@ public class WeatherService {
         String[] memberFieldsToBindTo = {"longitude", "latitude", "forecastTimeFromString", "temperature", "precipitation"};
         strategy.setColumnMapping(memberFieldsToBindTo);
 		
-        FileReader  fileReader = new FileReader(getFileFromRessourcesFolder("data/file1.csv")); 
+        InputStreamReader  fileReader = (getFileFromRessourcesFolder("data/file1.csv")); 
         System.out.println("=====================FILE 1 ok ");
-		 List<Weather> beans = new CsvToBeanBuilder<Weather>(fileReader)
+		 List<Weather> beans = new CsvToBeanBuilder<Weather>((fileReader))
 	                .withMappingStrategy(strategy)
 	                .withSkipLines(1)
 	                .build()
 	                .parse();
 		 System.out.println("=====================PARRSE ! ok ");
 //		 weatherRepository.saveAll(beans);
-		 beans = new CsvToBeanBuilder<Weather>(new FileReader(getFileFromRessourcesFolder("data/file2.csv")))
+		 beans = new CsvToBeanBuilder<Weather>((getFileFromRessourcesFolder("data/file2.csv")))
 	                .withMappingStrategy(strategy)
 	                .withSkipLines(1)
 	                .build()
 	                .parse();
 //		 weatherRepository.saveAll(beans);
-		 beans = new CsvToBeanBuilder<Weather>(new FileReader(getFileFromRessourcesFolder("data/file3.csv")))
+		 beans = new CsvToBeanBuilder<Weather>((getFileFromRessourcesFolder("data/file3.csv")))
 	                .withMappingStrategy(strategy)
 	                .withSkipLines(1)
 	                .build()
@@ -67,13 +69,15 @@ public class WeatherService {
 		
 	}
 
-	private File getFileFromRessourcesFolder(String dataFileRessourcePath) throws FileNotFoundException, URISyntaxException {
-		URL ressourceUrl = WeatherService.class.getClassLoader().getResource(dataFileRessourcePath);
-		if(ressourceUrl == null) {
-			System.err.println("Cannot find file");
-			throw new FileNotFoundException("cannot find file " + dataFileRessourcePath); 
-		}
-		return Paths.get(ressourceUrl.toURI()).toFile();
+	private InputStreamReader getFileFromRessourcesFolder(String dataFileRessourcePath) throws FileNotFoundException, URISyntaxException {
+		  return new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(dataFileRessourcePath));
+
+//		File file = this.getClass().getResourceAsStream("dataFileRessourcePath").getFile();
+//		if(ressourceUrl == null) {
+//			System.err.println("Cannot find file");
+//			throw new FileNotFoundException("cannot find file " + dataFileRessourcePath); 
+//		}
+//		return Paths.get(ressourceUrl.toURI()).toFile();
 		
 }
 
