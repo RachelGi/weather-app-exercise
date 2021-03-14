@@ -32,10 +32,8 @@ public class WeatherService {
 //Path csvFile
 	@SuppressWarnings("unchecked")
 	public void importWeatherDataFromCSVFile() throws FileNotFoundException, IOException, CsvException, URISyntaxException {
-		
-		File f = getFileFromRessourcesFolder("data/file1.csv");
-		
-		
+		System.err.println("=========================HERE=================");
+
 		
 		
 		ColumnPositionMappingStrategy<Weather> strategy = new ColumnPositionMappingStrategy<>();
@@ -48,19 +46,19 @@ public class WeatherService {
 	                .withSkipLines(1)
 	                .build()
 	                .parse();
-		 weatherRepository.saveAll(beans);
+//		 weatherRepository.saveAll(beans);
 		 beans = new CsvToBeanBuilder<Weather>(new FileReader(getFileFromRessourcesFolder("data/file2.csv")))
 	                .withMappingStrategy(strategy)
 	                .withSkipLines(1)
 	                .build()
 	                .parse();
-		 weatherRepository.saveAll(beans);
+//		 weatherRepository.saveAll(beans);
 		 beans = new CsvToBeanBuilder<Weather>(new FileReader(getFileFromRessourcesFolder("data/file3.csv")))
 	                .withMappingStrategy(strategy)
 	                .withSkipLines(1)
 	                .build()
 	                .parse();
-		 weatherRepository.saveAll(beans);
+//		 weatherRepository.saveAll(beans);
 		
 		
 		
@@ -68,7 +66,10 @@ public class WeatherService {
 
 	private File getFileFromRessourcesFolder(String dataFileRessourcePath) throws FileNotFoundException, URISyntaxException {
 		URL ressourceUrl = WeatherService.class.getClassLoader().getResource(dataFileRessourcePath);
-		if(ressourceUrl == null) throw new FileNotFoundException("cannot find file " + dataFileRessourcePath); 
+		if(ressourceUrl == null) {
+			System.err.println("Cannot find file");
+			throw new FileNotFoundException("cannot find file " + dataFileRessourcePath); 
+		}
 		return Paths.get(ressourceUrl.toURI()).toFile();
 		
 }
