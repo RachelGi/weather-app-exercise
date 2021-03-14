@@ -1,13 +1,16 @@
 package com.climacell.weather_app.service;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
 import com.climacell.weather_app.controller.StatisticField;
@@ -28,25 +31,31 @@ public class WeatherService {
 
 //Path csvFile
 	@SuppressWarnings("unchecked")
-	public void importWeatherDataFromCSVFile() throws FileNotFoundException, IOException, CsvException {
+	public void importWeatherDataFromCSVFile() throws FileNotFoundException, IOException, CsvException, URISyntaxException {
+		
+		File f = getFileFromRessourcesFolder("data/file1.csv");
+		
+		
+		
+		
 		ColumnPositionMappingStrategy<Weather> strategy = new ColumnPositionMappingStrategy<>();
         strategy.setType(Weather.class);
         String[] memberFieldsToBindTo = {"longitude", "latitude", "forecastTimeFromString", "temperature", "precipitation"};
         strategy.setColumnMapping(memberFieldsToBindTo);
 		
-		 List<Weather> beans = new CsvToBeanBuilder<Weather>(new FileReader("data/file1.csv"))
+		 List<Weather> beans = new CsvToBeanBuilder<Weather>(new FileReader(getFileFromRessourcesFolder("data/file1.csv")))
 	                .withMappingStrategy(strategy)
 	                .withSkipLines(1)
 	                .build()
 	                .parse();
 		 weatherRepository.saveAll(beans);
-		 beans = new CsvToBeanBuilder<Weather>(new FileReader("data/file2.csv"))
+		 beans = new CsvToBeanBuilder<Weather>(new FileReader(getFileFromRessourcesFolder("data/file2.csv")))
 	                .withMappingStrategy(strategy)
 	                .withSkipLines(1)
 	                .build()
 	                .parse();
 		 weatherRepository.saveAll(beans);
-		 beans = new CsvToBeanBuilder<Weather>(new FileReader("data/file3.csv"))
+		 beans = new CsvToBeanBuilder<Weather>(new FileReader(getFileFromRessourcesFolder("data/file3.csv")))
 	                .withMappingStrategy(strategy)
 	                .withSkipLines(1)
 	                .build()
@@ -56,6 +65,13 @@ public class WeatherService {
 		
 		
 	}
+
+	private File getFileFromRessourcesFolder(String dataFileRessourcePath) throws FileNotFoundException, URISyntaxException {
+		URL ressourceUrl = WeatherService.class.getClassLoader().getResource(dataFileRessourcePath);
+		if(ressourceUrl == null) throw new FileNotFoundException("cannot find file " + dataFileRessourcePath); 
+		return Paths.get(ressourceUrl.toURI()).toFile();
+		
+}
 
 	public List<Weather> retrieveWeathersAtLocation(double longitude, double latitude)throws NoDataFoundException {
 		return weatherRepository.findByLongitudeAndLatitude(longitude, latitude);
