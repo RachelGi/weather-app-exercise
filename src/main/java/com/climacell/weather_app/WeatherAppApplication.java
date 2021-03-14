@@ -1,6 +1,7 @@
 package com.climacell.weather_app;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import javax.annotation.PostConstruct;
 
@@ -36,7 +37,7 @@ public class WeatherAppApplication {
 	}
 	
 	@PostConstruct
-	public void initMockDatabase() throws MockParseFileException   {
+	public void initMockDatabase() throws MockParseFileException, URISyntaxException   {
 		try {
 			weatherService.importWeatherDataFromCSVFile();
 		} catch (IOException | CsvException e) {
