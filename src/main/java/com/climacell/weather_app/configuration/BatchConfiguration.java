@@ -64,7 +64,7 @@ public class BatchConfiguration {
 	@Bean
 	public Step step1(FlatFileItemReader<WeatherFromCsv> itemReader, MongoItemWriter<Weather> itemWriter)
 			throws Exception {
-		return this.stepBuilderFactory.get("step1").<WeatherFromCsv, Weather>chunk(40).reader(itemReader)
+		return this.stepBuilderFactory.get("step1").<WeatherFromCsv, Weather>chunk(100).reader(itemReader)
 				.processor(processor()).writer(itemWriter).build();
 	}
 

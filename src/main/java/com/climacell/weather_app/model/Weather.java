@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 @CompoundIndexes({
     @CompoundIndex(name = "location_index", def = "{longitude':1, 'latitude':1}")
 })//TODO not working! did manually
+//TODO add indx uniq : location & date
 public class Weather { 
 	private Double longitude; 
 	private Double latitude; 
