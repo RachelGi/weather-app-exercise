@@ -1,10 +1,16 @@
 package com.climacell.weather_app.model;
 
-import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.springframework.data.annotation.Transient;
+
+//import java.sql.Date;
 
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
@@ -22,4 +28,18 @@ public class Weather {
 	private Date forecastTime;
 	private Double temperature;
 	private Double precipitation;
+	@Transient
+	String forecastTimeFromString;
+	
+	
+	
+	public void setForecastTimeFromString(String date){
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		try {
+			this.forecastTime = df.parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

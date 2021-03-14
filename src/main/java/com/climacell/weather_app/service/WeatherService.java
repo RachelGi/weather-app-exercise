@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
 import com.climacell.weather_app.controller.StatisticField;
@@ -14,6 +15,7 @@ import com.climacell.weather_app.exception.NoDataFoundException;
 import com.climacell.weather_app.model.Weather;
 import com.climacell.weather_app.model.WeatherSummarize;
 import com.climacell.weather_app.repository.WeatherRepository;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.exceptions.CsvException;
 
@@ -25,21 +27,31 @@ public class WeatherService {
 
 
 //Path csvFile
+	@SuppressWarnings("unchecked")
 	public void importWeatherDataFromCSVFile() throws FileNotFoundException, IOException, CsvException {
-//		  try (CSVReader reader = new CSVReader(new FileReader("C:\\Users\\rache\\Downloads\\file2.csv"))) {
-//		      List<String[]> r = reader.readAll();
-//		      System.out.println(r.size());
-//		  }
-//		long start = System.currentTimeMillis();
-//		 List<Weather> beans = new CsvToBeanBuilder(new FileReader("C:\\Users\\rache\\Downloads\\file1.csv"))
-//	                .withType(Weather.class)
-//	                .build()
-//	                .parse();
-//		 weatherRepository.saveAll(beans);
-//		 System.err.println("end " + (System.currentTimeMillis() - start));
-//		 System.out.println(beans.size());
+		ColumnPositionMappingStrategy<Weather> strategy = new ColumnPositionMappingStrategy<>();
+        strategy.setType(Weather.class);
+        String[] memberFieldsToBindTo = {"longitude", "latitude", "forecastTimeFromString", "temperature", "precipitation"};
+        strategy.setColumnMapping(memberFieldsToBindTo);
 		
-		
+		 List<Weather> beans = new CsvToBeanBuilder<Weather>(new FileReader("data/file1.csv"))
+	                .withMappingStrategy(strategy)
+	                .withSkipLines(1)
+	                .build()
+	                .parse();
+		 weatherRepository.saveAll(beans);
+		 beans = new CsvToBeanBuilder<Weather>(new FileReader("data/file2.csv"))
+	                .withMappingStrategy(strategy)
+	                .withSkipLines(1)
+	                .build()
+	                .parse();
+		 weatherRepository.saveAll(beans);
+		 beans = new CsvToBeanBuilder<Weather>(new FileReader("data/file3.csv"))
+	                .withMappingStrategy(strategy)
+	                .withSkipLines(1)
+	                .build()
+	                .parse();
+		 weatherRepository.saveAll(beans);
 		
 		
 		
