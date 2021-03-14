@@ -51,19 +51,19 @@ public class WeatherService {
 	                .build()
 	                .parse();
 		 System.out.println("=====================PARRSE ! ok ");
-//		 weatherRepository.saveAll(beans);
+		 weatherRepository.saveAll(beans);
 		 beans = new CsvToBeanBuilder<Weather>((getFileFromRessourcesFolder("data/file2.csv")))
 	                .withMappingStrategy(strategy)
 	                .withSkipLines(1)
 	                .build()
 	                .parse();
-//		 weatherRepository.saveAll(beans);
+		 weatherRepository.saveAll(beans);
 		 beans = new CsvToBeanBuilder<Weather>((getFileFromRessourcesFolder("data/file3.csv")))
 	                .withMappingStrategy(strategy)
 	                .withSkipLines(1)
 	                .build()
 	                .parse();
-//		 weatherRepository.saveAll(beans);
+		 weatherRepository.saveAll(beans);
 		
 		
 		
