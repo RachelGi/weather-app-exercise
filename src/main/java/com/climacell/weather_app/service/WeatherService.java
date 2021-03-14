@@ -34,26 +34,26 @@ public class WeatherService {
 //Path csvFile
 	@SuppressWarnings("unchecked")
 	public void importWeatherDataFromCSVFile() throws FileNotFoundException, IOException, CsvException, URISyntaxException {
-		System.err.println("=========================HERE=================");
-
-		
-		
-		ColumnPositionMappingStrategy<Weather> strategy = new ColumnPositionMappingStrategy<>();
-        strategy.setType(Weather.class);
-        String[] memberFieldsToBindTo = {"longitude", "latitude", "forecastTimeFromString", "temperature", "precipitation"};
-        strategy.setColumnMapping(memberFieldsToBindTo);
-		
-        InputStreamReader  fileReader = (getFileFromRessourcesFolder("data/file1.csv")); 
-        System.out.println("=====================FILE 1 ok ");
-		 List<Weather> beans = new CsvToBeanBuilder<Weather>((fileReader))
-	                .withMappingStrategy(strategy)
-	                .withSkipLines(1)
-	                .build()
-	                .parse();
-		 System.out.println("=====================PARRSE  ! ok ");
-		 System.out.println("=====================SAVE1");
-		 weatherRepository.saveAll(beans);
-		 System.out.println("=====================SAVE1 DONE");
+//		System.err.println("=========================HERE=================");
+//
+//		
+//		
+//		ColumnPositionMappingStrategy<Weather> strategy = new ColumnPositionMappingStrategy<>();
+//        strategy.setType(Weather.class);
+//        String[] memberFieldsToBindTo = {"longitude", "latitude", "forecastTimeFromString", "temperature", "precipitation"};
+//        strategy.setColumnMapping(memberFieldsToBindTo);
+//		
+//        InputStreamReader  fileReader = (getFileFromRessourcesFolder("data/file1.csv")); 
+//        System.out.println("=====================FILE 1 ok ");
+//		 List<Weather> beans = new CsvToBeanBuilder<Weather>((fileReader))
+//	                .withMappingStrategy(strategy)
+//	                .withSkipLines(1)
+//	                .build()
+//	                .parse();
+//		 System.out.println("=====================PARRSE  ! ok ");
+//		 System.out.println("=====================SAVE1");
+////		 weatherRepository.saveAll(beans);
+//		 System.out.println("=====================SAVE1 DONE");
 
 //		 beans = new CsvToBeanBuilder<Weather>((getFileFromRessourcesFolder("data/file2.csv")))
 //	                .withMappingStrategy(strategy)
