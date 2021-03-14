@@ -41,11 +41,14 @@ public class WeatherService {
         String[] memberFieldsToBindTo = {"longitude", "latitude", "forecastTimeFromString", "temperature", "precipitation"};
         strategy.setColumnMapping(memberFieldsToBindTo);
 		
-		 List<Weather> beans = new CsvToBeanBuilder<Weather>(new FileReader(getFileFromRessourcesFolder("data/file1.csv")))
+        FileReader  fileReader = new FileReader(getFileFromRessourcesFolder("data/file1.csv")); 
+        System.out.println("=====================FILE 1 ok ");
+		 List<Weather> beans = new CsvToBeanBuilder<Weather>(fileReader)
 	                .withMappingStrategy(strategy)
 	                .withSkipLines(1)
 	                .build()
 	                .parse();
+		 System.out.println("=====================PARRSE ! ok ");
 //		 weatherRepository.saveAll(beans);
 		 beans = new CsvToBeanBuilder<Weather>(new FileReader(getFileFromRessourcesFolder("data/file2.csv")))
 	                .withMappingStrategy(strategy)
