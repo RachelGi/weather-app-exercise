@@ -52,7 +52,7 @@ public class WeatherService {
 	                .parse();
 		 System.out.println("=====================PARRSE  ! ok ");
 		 System.out.println("=====================SAVE1");
-		 weatherRepository.saveAll(beans);
+//		 weatherRepository.saveAll(beans);
 		 System.out.println("=====================SAVE1 DONE");
 
 //		 beans = new CsvToBeanBuilder<Weather>((getFileFromRessourcesFolder("data/file2.csv")))
