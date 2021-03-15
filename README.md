@@ -20,6 +20,7 @@ AssumptionS :
 1. The mock data from the CSV file is loaded at the beginning of the application
 2. For a given time and location (longitude and latitude), there are no more than one weather forecast 
 3. The format of the CSV file to load cannot be modified
+4. Validation rules was created on the mongo weather collection : the latitude is between -90\+90 and longitude -180\+180
 
 
 
