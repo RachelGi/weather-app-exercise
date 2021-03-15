@@ -1,4 +1,4 @@
-package com.climacell.weather_app.ex;
+package com.climacell.weather_app.csvParse;
 
 import java.text.DateFormat;
 import java.text.ParseException;

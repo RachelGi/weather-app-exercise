@@ -15,9 +15,10 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.climacell.weather_app.controller.StatisticField;
+import com.climacell.weather_app.controller.SummarizeField;
 import com.climacell.weather_app.exception.NoDataFoundException;
 import com.climacell.weather_app.model.Weather;
+import com.climacell.weather_app.model.WeatherAtLocation;
 import com.climacell.weather_app.model.WeatherSummarize;
 import com.climacell.weather_app.repository.WeatherRepository;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
@@ -31,71 +32,64 @@ public class WeatherService {
 	private WeatherRepository weatherRepository;
 
 
-//Path csvFile
+	//Path csvFile
 	@SuppressWarnings("unchecked")
 	public void importWeatherDataFromCSVFile() throws FileNotFoundException, IOException, CsvException, URISyntaxException {
-//		System.err.println("=========================HERE=================");
-//
-//		
-//		
-//		ColumnPositionMappingStrategy<Weather> strategy = new ColumnPositionMappingStrategy<>();
-//        strategy.setType(Weather.class);
-//        String[] memberFieldsToBindTo = {"longitude", "latitude", "forecastTimeFromString", "temperature", "precipitation"};
-//        strategy.setColumnMapping(memberFieldsToBindTo);
-//		
-//        InputStreamReader  fileReader = (getFileFromRessourcesFolder("data/file1.csv")); 
-//        System.out.println("=====================FILE 1 ok ");
-//		 List<Weather> beans = new CsvToBeanBuilder<Weather>((fileReader))
-//	                .withMappingStrategy(strategy)
-//	                .withSkipLines(1)
-//	                .build()
-//	                .parse();
-//		 System.out.println("=====================PARRSE  ! ok ");
-//		 System.out.println("=====================SAVE1");
-////		 weatherRepository.saveAll(beans);
-//		 System.out.println("=====================SAVE1 DONE");
+		//		System.err.println("=========================HERE=================");
+		//
+		//		
+		//		
+		//		ColumnPositionMappingStrategy<Weather> strategy = new ColumnPositionMappingStrategy<>();
+		//        strategy.setType(Weather.class);
+		//        String[] memberFieldsToBindTo = {"longitude", "latitude", "forecastTimeFromString", "temperature", "precipitation"};
+		//        strategy.setColumnMapping(memberFieldsToBindTo);
+		//		
+		//        InputStreamReader  fileReader = (getFileFromRessourcesFolder("data/file1.csv")); 
+		//        System.out.println("=====================FILE 1 ok ");
+		//		 List<Weather> beans = new CsvToBeanBuilder<Weather>((fileReader))
+		//	                .withMappingStrategy(strategy)
+		//	                .withSkipLines(1)
+		//	                .build()
+		//	                .parse();
+		//		 System.out.println("=====================PARRSE  ! ok ");
+		//		 System.out.println("=====================SAVE1");
+		////		 weatherRepository.saveAll(beans);
+		//		 System.out.println("=====================SAVE1 DONE");
 
-//		 beans = new CsvToBeanBuilder<Weather>((getFileFromRessourcesFolder("data/file2.csv")))
-//	                .withMappingStrategy(strategy)
-//	                .withSkipLines(1)
-//	                .build()
-//	                .parse();
-//		 weatherRepository.saveAll(beans);
-//		 beans = new CsvToBeanBuilder<Weather>((getFileFromRessourcesFolder("data/file3.csv")))
-//	                .withMappingStrategy(strategy)
-//	                .withSkipLines(1)
-//	                .build()
-//	                .parse();
-//		 weatherRepository.saveAll(beans);
-		
-		
-		
+		//		 beans = new CsvToBeanBuilder<Weather>((getFileFromRessourcesFolder("data/file2.csv")))
+		//	                .withMappingStrategy(strategy)
+		//	                .withSkipLines(1)
+		//	                .build()
+		//	                .parse();
+		//		 weatherRepository.saveAll(beans);
+		//		 beans = new CsvToBeanBuilder<Weather>((getFileFromRessourcesFolder("data/file3.csv")))
+		//	                .withMappingStrategy(strategy)
+		//	                .withSkipLines(1)
+		//	                .build()
+		//	                .parse();
+		//		 weatherRepository.saveAll(beans);
+
+
+
 	}
 
 	private InputStreamReader getFileFromRessourcesFolder(String dataFileRessourcePath) throws FileNotFoundException, URISyntaxException {
-		  return new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(dataFileRessourcePath));
+		return new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(dataFileRessourcePath));
 
-//		File file = this.getClass().getResourceAsStream("dataFileRessourcePath").getFile();
-//		if(ressourceUrl == null) {
-//			System.err.println("Cannot find file");
-//			throw new FileNotFoundException("cannot find file " + dataFileRessourcePath); 
-//		}
-//		return Paths.get(ressourceUrl.toURI()).toFile();
-		
-}
+	}
 
-	public List<Weather> retrieveWeathersAtLocation(double longitude, double latitude)throws NoDataFoundException {
+	public List<WeatherAtLocation> retrieveWeathersAtLocation(double longitude, double latitude)throws NoDataFoundException {
 		return weatherRepository.findByLongitudeAndLatitude(longitude, latitude);
 	}
 
-	public HashMap<StatisticField, WeatherSummarize> retrieveSummarizeWeathersAtLocation(double longitude, double latitude) throws NoDataFoundException {
-		HashMap<StatisticField, WeatherSummarize> summarizeDataMap = new HashMap<>(); 
-		
-		summarizeDataMap.put(StatisticField.MIN, weatherRepository.getMinWeatherAtLocation(longitude, latitude));
-		summarizeDataMap.put(StatisticField.MAX, weatherRepository.getMaxWeatherAtLocation(longitude, latitude));
-		summarizeDataMap.put(StatisticField.AVG, weatherRepository.getAverageWeatherAtLocation(longitude, latitude));
+	public HashMap<SummarizeField, WeatherSummarize> retrieveSummarizeWeathersAtLocation(double longitude, double latitude) throws NoDataFoundException {
+		HashMap<SummarizeField, WeatherSummarize> summarizeDataMap = new HashMap<>(); 
 
-		
+		summarizeDataMap.put(SummarizeField.MIN, weatherRepository.getMinWeatherAtLocation(longitude, latitude));
+		summarizeDataMap.put(SummarizeField.MAX, weatherRepository.getMaxWeatherAtLocation(longitude, latitude));
+		summarizeDataMap.put(SummarizeField.AVG, weatherRepository.getAverageWeatherAtLocation(longitude, latitude));
+
+
 		return summarizeDataMap;
 	}
 

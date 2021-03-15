@@ -22,9 +22,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
-import com.climacell.weather_app.ex.JobCompletionNotificationListener;
-import com.climacell.weather_app.ex.WeatherFromCsv;
-import com.climacell.weather_app.ex.WeatherItemProcessor;
+import com.climacell.weather_app.csvParse.JobCompletionNotificationListener;
+import com.climacell.weather_app.csvParse.WeatherFromCsv;
+import com.climacell.weather_app.csvParse.WeatherItemProcessor;
 import com.climacell.weather_app.model.Weather;
 
 @Configuration
@@ -39,7 +39,6 @@ public class BatchConfiguration {
 	@Bean
 	@StepScope
 	public FlatFileItemReader<WeatherFromCsv> reader(@Value("#{jobParameters[fileName]}") String fileName) throws IOException {
-		System.err.println(fileName);
 		return new FlatFileItemReaderBuilder<WeatherFromCsv>().name("weatherItemReader")
 				.resource(new ClassPathResource("data/" + fileName + ".csv")).delimited()
 				.names(new String[] {"longitude", "latitude", "forecastTimeFromString", "temperature", "precipitation"})
@@ -60,24 +59,16 @@ public class BatchConfiguration {
 
 	@Bean
 	public WeatherItemProcessor processor() {
-		WeatherItemProcessor c = new WeatherItemProcessor();
-		return c;
+		return new WeatherItemProcessor();
 	}
 
 
 	@Bean
 	public Step step1( MongoItemWriter<Weather> itemWriter)
 			throws Exception {
-		return this.stepBuilderFactory.get("step1").<WeatherFromCsv, Weather>chunk(600).reader(reader(null))
+		return this.stepBuilderFactory.get("step1").<WeatherFromCsv, Weather>chunk(400).reader(reader(null))
 				.processor(processor()).writer(itemWriter).build();
 	}
-
-//	@Bean
-//	public Step step1(FlatFileItemReader<WeatherFromCsv> itemReader, MongoItemWriter<Weather> itemWriter)
-//			throws Exception {
-//		return this.stepBuilderFactory.get("step1").<WeatherFromCsv, Weather>chunk(100).reader(itemReader)
-//				.processor(processor()).writer(itemWriter).build();
-//	}
 	@Bean
 	public Job updateWeatherJob(JobCompletionNotificationListener listener, Step step1)
 			throws Exception {

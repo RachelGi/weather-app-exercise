@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WeatherSummarize {
-	private Double temperature;
-	private Double precipitation;
+	protected Double temperature;
+	protected Double precipitation;
 
 
 }

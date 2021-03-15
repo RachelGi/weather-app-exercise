@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import com.climacell.weather_app.model.WeatherSummarize;
 import com.climacell.weather_app.model.Weather;
+import com.climacell.weather_app.model.WeatherAtLocation;
 
 @Repository
 public class WeatherRepositoryImpl implements WeatherRepositoryCustom{
@@ -23,12 +24,12 @@ public class WeatherRepositoryImpl implements WeatherRepositoryCustom{
 	MongoTemplate mongoTemplate; 
 
 	@Override
-	public List<Weather> findByLongitudeAndLatitude(Double longitude, Double latitude) {
+	public List<WeatherAtLocation> findByLongitudeAndLatitude(Double longitude, Double latitude) {
 		Query q = new Query(); 
-		q.withHint("location_index");//TODO
+		q.withHint("location_index");
 		q.addCriteria(new Criteria().andOperator(Criteria.where("longitude").is(longitude),Criteria.where("latitude").is(latitude)));
-
-		return mongoTemplate.find(q, Weather.class);
+		q.fields().exclude("longitude", "latitude");
+		return mongoTemplate.find(q, WeatherAtLocation.class);
 	}
 
 	@Override
@@ -68,6 +69,11 @@ public class WeatherRepositoryImpl implements WeatherRepositoryCustom{
 	private double roundToOnDigit(double val) {
 		return Math.round(val * 10) / 10.0; 
 	}
+
+
+
+
+
 	//MIN
 
 	//    List<? extends Bson> pipeline = Arrays.asList(
