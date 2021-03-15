@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.climacell</groupId>
 	<artifactId>weather-app-exercise</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version> 
 	<name>weather-app-exercise</name>
 	<description>Weather app</description>
 	<properties>
