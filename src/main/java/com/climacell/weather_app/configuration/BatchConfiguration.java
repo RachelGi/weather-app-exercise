@@ -8,6 +8,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.data.MongoItemWriter;
 import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
@@ -15,6 +16,7 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -35,14 +37,15 @@ public class BatchConfiguration {
 
 
 	@Bean
-	public FlatFileItemReader<WeatherFromCsv> reader() throws IOException {
+	@StepScope
+	public FlatFileItemReader<WeatherFromCsv> reader(@Value("#{jobParameters[fileName]}") String fileName) throws IOException {
+		System.err.println(fileName);
 		return new FlatFileItemReaderBuilder<WeatherFromCsv>().name("weatherItemReader")
-				.resource(new ClassPathResource("data/file1.csv")).delimited()
+				.resource(new ClassPathResource("data/" + fileName + ".csv")).delimited()
 				.names(new String[] {"longitude", "latitude", "forecastTimeFromString", "temperature", "precipitation"})
 				.linesToSkip(1)
 				.fieldSetMapper(new BeanWrapperFieldSetMapper<WeatherFromCsv>() {
 					{
-						System.out.println("Read");
 						setTargetType(WeatherFromCsv.class);
 					}
 				}).build();
@@ -50,7 +53,6 @@ public class BatchConfiguration {
 
 	@Bean
 	public MongoItemWriter<Weather> writer(MongoTemplate mongoTemplate) {
-		System.out.println("save");
 		return new MongoItemWriterBuilder<Weather>().template(mongoTemplate).collection("weather")
 				.build();
 	}
@@ -64,12 +66,18 @@ public class BatchConfiguration {
 
 
 	@Bean
-	public Step step1(FlatFileItemReader<WeatherFromCsv> itemReader, MongoItemWriter<Weather> itemWriter)
+	public Step step1( MongoItemWriter<Weather> itemWriter)
 			throws Exception {
-		return this.stepBuilderFactory.get("step1").<WeatherFromCsv, Weather>chunk(100).reader(itemReader)
+		return this.stepBuilderFactory.get("step1").<WeatherFromCsv, Weather>chunk(600).reader(reader(null))
 				.processor(processor()).writer(itemWriter).build();
 	}
 
+//	@Bean
+//	public Step step1(FlatFileItemReader<WeatherFromCsv> itemReader, MongoItemWriter<Weather> itemWriter)
+//			throws Exception {
+//		return this.stepBuilderFactory.get("step1").<WeatherFromCsv, Weather>chunk(100).reader(itemReader)
+//				.processor(processor()).writer(itemWriter).build();
+//	}
 	@Bean
 	public Job updateWeatherJob(JobCompletionNotificationListener listener, Step step1)
 			throws Exception {

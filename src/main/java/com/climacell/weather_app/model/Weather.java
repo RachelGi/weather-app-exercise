@@ -29,8 +29,6 @@ public class Weather {
 	private Date forecastTime;
 	private Double temperature;
 	private Double precipitation;
-	@Transient
-	String forecastTimeFromString;
 	
 	
 	

@@ -38,10 +38,12 @@ public class WeatherAppApplication {
     JobLauncher jobLauncher;
 	@Autowired
 	Job job;
+	private static long start;
 
 	public static void main(String[] args) {
 		SpringApplication.run(WeatherAppApplication.class, args);
 		System.out.println("=========Start=========");
+		System.out.println((System.currentTimeMillis() - start ) + "");
 	}
 
 	@Bean 
@@ -54,11 +56,13 @@ public class WeatherAppApplication {
 	public void initMockDatabase() throws MockParseFileException, URISyntaxException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException   {
 //		try {
 //			weatherService.importWeatherDataFromCSVFile();
-			
-			 JobParameters params = new JobParametersBuilder()
-		                .addString("JobID", String.valueOf(System.currentTimeMillis()))
-		                .toJobParameters();
-		        jobLauncher.run(job, params);
+			 start = System.currentTimeMillis();
+//			 JobParameters params = new JobParametersBuilder()
+//		                .addString("JobID", String.valueOf(System.currentTimeMillis()))
+//		                .toJobParameters();
+//		        jobLauncher.run(job, params);
+		        
+		        
 		        
 //		} catch (IOException | CsvException e) {
 //			throw new MockParseFileException(null, e);//TODO

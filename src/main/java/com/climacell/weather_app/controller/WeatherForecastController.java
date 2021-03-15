@@ -6,14 +6,23 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.batch.core.BatchStatus;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.climacell.weather_app.exception.NoDataFoundException;
-import com.climacell.weather_app.model.Location;
 import com.climacell.weather_app.model.Weather;
 import com.climacell.weather_app.model.WeatherSummarize;
 import com.climacell.weather_app.repository.WeatherRepository;
@@ -27,6 +36,10 @@ public class WeatherForecastController {
 	private WeatherRepository weatherRepository; //TODO remove it
 	@Autowired
 	private WeatherService weatherService;
+	@Autowired
+	JobLauncher jobLauncher;
+	@Autowired
+	Job job;
 
 	@GetMapping("/")
 	private String printWelcome( ) {
@@ -38,6 +51,17 @@ public class WeatherForecastController {
 		return "welcome";
 	}
 
+	@PostMapping("admin/load")
+	public BatchStatus loadWeatherData(@RequestParam("fileName") String fileName) throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException {
+		long start = System.currentTimeMillis();
+		System.out.println("=====" + fileName);
+		JobParameters params = new JobParametersBuilder()
+				.addString("fileName", fileName)
+				.toJobParameters();
+		BatchStatus status = jobLauncher.run(job, params).getStatus();
+		System.out.println("was 211623 with 200 chunk now with 400: ===========Take : " + (System.currentTimeMillis() - start) );
+		return status;
+	}
 
 	@GetMapping("/weathers")
 	private List<Weather> printAllWeather( ) throws Exception{
