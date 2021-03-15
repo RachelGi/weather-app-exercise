@@ -42,6 +42,7 @@ public class BatchConfiguration {
 				.linesToSkip(1)
 				.fieldSetMapper(new BeanWrapperFieldSetMapper<WeatherFromCsv>() {
 					{
+						System.out.println("Read");
 						setTargetType(WeatherFromCsv.class);
 					}
 				}).build();
@@ -49,6 +50,7 @@ public class BatchConfiguration {
 
 	@Bean
 	public MongoItemWriter<Weather> writer(MongoTemplate mongoTemplate) {
+		System.out.println("save");
 		return new MongoItemWriterBuilder<Weather>().template(mongoTemplate).collection("weather")
 				.build();
 	}
