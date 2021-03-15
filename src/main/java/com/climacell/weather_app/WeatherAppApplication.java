@@ -1,17 +1,12 @@
 package com.climacell.weather_app;
 
-import java.net.URISyntaxException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,9 +18,16 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 import com.climacell.weather_app.exception.MockParseFileException;
+import com.climacell.weather_app.parserUtils.JobCompletionNotificationListener;
 import com.climacell.weather_app.service.WeatherService;
 
-//@SpringBootApplication
+
+/**
+ *  Web service used to get the weather forecast and statistics for a
+ * 	specific location
+ *  The weather data is get from CSV file and save into DataBase
+ * 	@author Rachel Guigui
+ */
 @EnableMongoAuditing
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
 public class WeatherAppApplication {
@@ -34,39 +36,45 @@ public class WeatherAppApplication {
 	MongoDatabaseFactory mongoTemplateFactory;
 	@Autowired
 	private WeatherService weatherService;
-	@Autowired
-    JobLauncher jobLauncher;
-	@Autowired
-	Job job;
-	private static long start;
-
+	private static final Logger log =
+			LoggerFactory.getLogger(WeatherAppApplication.class);
 	public static void main(String[] args) {
 		SpringApplication.run(WeatherAppApplication.class, args);
-		System.out.println("=========Start=========");
-		System.out.println((System.currentTimeMillis() - start ) + "");
 	}
 
 	@Bean 
 	public MongoTemplate mongoTemplate(MongoDatabaseFactory mongoDbFactory,MongoMappingContext context) { 
 		MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory); 
+		log.info("init MongoTemplate");
 		return mongoTemplate; 
 	}
+
 	
+	
+	/**
+	 * Init the database with mock data csv file from the resource/data folder
+	 * Parse and save the weather data into weather collection
+	 * @throws MockParseFileException if an error occurred during the parsing of the data file
+	 */
 	@PostConstruct
-	public void initMockDatabase() throws MockParseFileException, URISyntaxException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException, JobParametersInvalidException   {
-//		try {
-//			weatherService.importWeatherDataFromCSVFile();
-			 start = System.currentTimeMillis();
-//			 JobParameters params = new JobParametersBuilder()
-//		                .addString("JobID", String.valueOf(System.currentTimeMillis()))
-//		                .toJobParameters();
-//		        jobLauncher.run(job, params);
-		        
-		        
-		        
-//		} catch (IOException | CsvException e) {
-//			throw new MockParseFileException(null, e);//TODO
-//		}
+	public void initMockDatabase() throws MockParseFileException   {
+	
+		log.info("init Mock Data");
+
+		ExecutorService exec = Executors.newFixedThreadPool(3);
+		exec.submit( () -> {
+			return weatherService.importWeatherDataFromCSVFile("data/file1.csv"); 
+		});
+		exec.submit( () -> {
+			return weatherService.importWeatherDataFromCSVFile("data/file2.csv"); 
+		});
+		exec.submit( () -> {
+			return weatherService.importWeatherDataFromCSVFile("data/file3.csv"); 
+		});
+
+		exec.shutdown(); 
+		
 	}
+
 
 }

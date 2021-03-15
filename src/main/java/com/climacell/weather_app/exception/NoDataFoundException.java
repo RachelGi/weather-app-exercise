@@ -1,5 +1,10 @@
 package com.climacell.weather_app.exception;
 
+/**
+ * Thrown when the requested data doesn't existed
+ * @author Rachel Guigui
+ *
+ */
 public class NoDataFoundException extends Exception {
 
 	/**

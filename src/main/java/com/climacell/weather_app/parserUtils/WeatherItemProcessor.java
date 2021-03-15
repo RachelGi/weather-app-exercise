@@ -1,4 +1,4 @@
-package com.climacell.weather_app.csvParse;
+package com.climacell.weather_app.parserUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -8,6 +8,12 @@ import org.springframework.batch.item.ItemProcessor;
 
 import com.climacell.weather_app.model.Weather;
 
+/**
+ * Class for transformation of the WeatherFromCsv object as written in the mock CSV file 
+ * to Weather object as saved in the database
+ * @author Rachel Guigui
+ *
+ */
 public class WeatherItemProcessor implements ItemProcessor<WeatherFromCsv, Weather>{
 
 	@Override

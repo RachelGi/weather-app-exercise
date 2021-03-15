@@ -1,87 +1,83 @@
 package com.climacell.weather_app.service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URISyntaxException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.batch.core.BatchStatus;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.climacell.weather_app.controller.SummarizeField;
+import com.climacell.weather_app.exception.MockParseFileException;
 import com.climacell.weather_app.exception.NoDataFoundException;
-import com.climacell.weather_app.model.Weather;
 import com.climacell.weather_app.model.WeatherAtLocation;
 import com.climacell.weather_app.model.WeatherSummarize;
 import com.climacell.weather_app.repository.WeatherRepository;
-import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.bean.CsvToBeanBuilder;
-import com.opencsv.exceptions.CsvException;
 
+
+/**
+ * Manage the weather data operations.
+ * @author Rachel Guigui
+ *
+ */
 @Service
 public class WeatherService {
 
-	@Autowired //TODO check
+	@Autowired 
 	private WeatherRepository weatherRepository;
+	@Autowired
+	private JobLauncher jobLauncher;
+	@Autowired
+	private Job job;
+	public static final String JOB_RESOURCE_FILE_NAME_FIELD = "resourceFileName";
 
 
-	//Path csvFile
-	@SuppressWarnings("unchecked")
-	public void importWeatherDataFromCSVFile() throws FileNotFoundException, IOException, CsvException, URISyntaxException {
-		//		System.err.println("=========================HERE=================");
-		//
-		//		
-		//		
-		//		ColumnPositionMappingStrategy<Weather> strategy = new ColumnPositionMappingStrategy<>();
-		//        strategy.setType(Weather.class);
-		//        String[] memberFieldsToBindTo = {"longitude", "latitude", "forecastTimeFromString", "temperature", "precipitation"};
-		//        strategy.setColumnMapping(memberFieldsToBindTo);
-		//		
-		//        InputStreamReader  fileReader = (getFileFromRessourcesFolder("data/file1.csv")); 
-		//        System.out.println("=====================FILE 1 ok ");
-		//		 List<Weather> beans = new CsvToBeanBuilder<Weather>((fileReader))
-		//	                .withMappingStrategy(strategy)
-		//	                .withSkipLines(1)
-		//	                .build()
-		//	                .parse();
-		//		 System.out.println("=====================PARRSE  ! ok ");
-		//		 System.out.println("=====================SAVE1");
-		////		 weatherRepository.saveAll(beans);
-		//		 System.out.println("=====================SAVE1 DONE");
+	/**
+	 * Import CSV File into Database 
+	 * @param resourceFileName - path of the CSV file to import, relative to the resource folder
+	 * @return BatchStatus - returns the status of the job, {@code BatchStatus.FAILED}  if an exception occurred
+	 * @throws MockParseFileException
+	 */
+	public BatchStatus importWeatherDataFromCSVFile(String resourceFileName) throws MockParseFileException{
 
-		//		 beans = new CsvToBeanBuilder<Weather>((getFileFromRessourcesFolder("data/file2.csv")))
-		//	                .withMappingStrategy(strategy)
-		//	                .withSkipLines(1)
-		//	                .build()
-		//	                .parse();
-		//		 weatherRepository.saveAll(beans);
-		//		 beans = new CsvToBeanBuilder<Weather>((getFileFromRessourcesFolder("data/file3.csv")))
-		//	                .withMappingStrategy(strategy)
-		//	                .withSkipLines(1)
-		//	                .build()
-		//	                .parse();
-		//		 weatherRepository.saveAll(beans);
-
-
-
+		JobParameters params = new JobParametersBuilder()
+				.addString(JOB_RESOURCE_FILE_NAME_FIELD, resourceFileName).addDate("date", new Date())
+				.toJobParameters();
+		BatchStatus status; 
+		try {
+			status = jobLauncher.run(job, params).getStatus();
+		}
+		catch(Exception e) {
+			status = BatchStatus.FAILED;
+			throw new MockParseFileException("Error to parse and save file " , e); 
+		}
+		return status;
 	}
 
-	private InputStreamReader getFileFromRessourcesFolder(String dataFileRessourcePath) throws FileNotFoundException, URISyntaxException {
-		return new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(dataFileRessourcePath));
 
-	}
-
+	/**
+	 * Returns the weather forecast in a specific location 
+	 * @param longitude (from -180 to  +180)
+	 * @param latitude (from -90 to  +90)
+	 * @return the weather forecast in a specific location 
+	 * @throws NoDataFoundException if no data was found
+	 */
 	public List<WeatherAtLocation> retrieveWeathersAtLocation(double longitude, double latitude)throws NoDataFoundException {
 		return weatherRepository.findByLongitudeAndLatitude(longitude, latitude);
 	}
 
+
+	/**
+	 * Retrieve max,min,avg weather data for a specific location
+	 * @param longitude (from -180 to  +180)
+	 * @param latitude (from -90 to  +90)
+	 * @throws NoDataFoundException
+	 */
 	public HashMap<SummarizeField, WeatherSummarize> retrieveSummarizeWeathersAtLocation(double longitude, double latitude) throws NoDataFoundException {
 		HashMap<SummarizeField, WeatherSummarize> summarizeDataMap = new HashMap<>(); 
 

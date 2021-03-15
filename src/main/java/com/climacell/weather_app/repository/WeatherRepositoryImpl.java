@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import com.climacell.weather_app.model.WeatherSummarize;
+import com.climacell.weather_app.exception.NoDataFoundException;
 import com.climacell.weather_app.model.Weather;
 import com.climacell.weather_app.model.WeatherAtLocation;
 
@@ -24,29 +25,33 @@ public class WeatherRepositoryImpl implements WeatherRepositoryCustom{
 	MongoTemplate mongoTemplate; 
 
 	@Override
-	public List<WeatherAtLocation> findByLongitudeAndLatitude(Double longitude, Double latitude) {
+	public List<WeatherAtLocation> findByLongitudeAndLatitude(Double longitude, Double latitude) throws NoDataFoundException {
 		Query q = new Query(); 
 		q.withHint("location_index");
 		q.addCriteria(new Criteria().andOperator(Criteria.where("longitude").is(longitude),Criteria.where("latitude").is(latitude)));
 		q.fields().exclude("longitude", "latitude");
-		return mongoTemplate.find(q, WeatherAtLocation.class);
+		List<WeatherAtLocation> res = mongoTemplate.find(q, WeatherAtLocation.class);
+		if(res.isEmpty()) {
+			throw new NoDataFoundException("No Data was found for Longitude " + longitude + " and latitude " + latitude );
+		}
+		 return res;
 	}
 
 	@Override
-	public WeatherSummarize getMinWeatherAtLocation(Double longitude, Double latitude) {
+	public WeatherSummarize getMinWeatherAtLocation(Double longitude, Double latitude) throws NoDataFoundException {
 		GroupOperation grpOpe = Aggregation.group("longitude").min("temperature").as("temperature").min("precipitation").as("precipitation");
 		return getAggregationForSummarizeWeather(longitude, latitude, grpOpe);
 	}
 
 	@Override
-	public WeatherSummarize getMaxWeatherAtLocation(Double longitude, Double latitude) {
+	public WeatherSummarize getMaxWeatherAtLocation(Double longitude, Double latitude) throws NoDataFoundException {
 		GroupOperation grpOpe = Aggregation.group("longitude").max("temperature").as("temperature").max("precipitation").as("precipitation");
 		return getAggregationForSummarizeWeather(longitude, latitude, grpOpe);
 
 	}
 
 	@Override
-	public WeatherSummarize getAverageWeatherAtLocation(Double longitude, Double latitude) {
+	public WeatherSummarize getAverageWeatherAtLocation(Double longitude, Double latitude) throws NoDataFoundException {
 		GroupOperation grpOpe = Aggregation.group("longitude").avg("temperature").as("temperature").avg("precipitation").as("precipitation");
 		WeatherSummarize weatherSummarize =  getAggregationForSummarizeWeather(longitude, latitude, grpOpe);
 		weatherSummarize.setPrecipitation(roundToOnDigit(weatherSummarize.getPrecipitation()));
@@ -55,14 +60,18 @@ public class WeatherRepositoryImpl implements WeatherRepositoryCustom{
 	}
 
 	private WeatherSummarize getAggregationForSummarizeWeather(Double longitude, Double latitude,
-			GroupOperation grpOpe) {
+			GroupOperation grpOpe) throws NoDataFoundException {
 		MatchOperation matchAgg = Aggregation.match(new Criteria().
 				andOperator(Criteria.where("longitude").is(longitude),Criteria.where("latitude").is(latitude)));
 		ProjectionOperation projectionOpe = Aggregation.project().andExclude("_id");
 		Aggregation aggregation = Aggregation.newAggregation(matchAgg,
 				grpOpe, projectionOpe);
 		AggregationResults<WeatherSummarize> t = mongoTemplate.aggregate(aggregation, Weather.class, WeatherSummarize.class);
-		return t.getMappedResults().get(0);
+		List<WeatherSummarize> result = t.getMappedResults();
+		if(result.isEmpty()) {
+			throw new NoDataFoundException("No Data was found for Longitude " + longitude + " and latitude " + latitude );
+		}
+		 return result.get(0);
 	}
 
 
@@ -72,37 +81,4 @@ public class WeatherRepositoryImpl implements WeatherRepositoryCustom{
 
 
 
-
-
-	//MIN
-
-	//    List<? extends Bson> pipeline = Arrays.asList(
-	//            new Document()
-	//                    .append("$match", new Document()
-	//                            .append("longitude", 3.4)
-	//                            .append("latitude", 2.3)
-	//                    ), 
-	//            new Document()
-	//                    .append("$group", new Document()
-	//                            .append("_id", new Document()
-	//                                    .append("field1", "$longitude")
-	//                                    .append("field2", "$latitude")
-	//                            )
-	//                            .append("minTemp", new Document()
-	//                                    .append("$min", "$temperature")
-	//                            )
-	//                            .append("minPrecipitation", new Document()
-	//                                    .append("$min", "$precipitation")
-	//                            )
-	//                    ), 
-	//            new Document()
-	//                    .append("$project", new Document()
-	//                            .append("_id", 0.0)
-	//                    )
-	//    );
-	//    
-	//    collection.aggregate(pipeline)
-	//            .allowDiskUse(false)
-	//            .forEach(processBlock);
-	//    
 }

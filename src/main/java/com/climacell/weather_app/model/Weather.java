@@ -29,6 +29,11 @@ public class Weather {
 	private Double temperature;
 	private Double precipitation;
 
+	public static final double MAX_LONGITUDE = 180.0;
+	public static final double MIN_LONGITUDE = -180.0;
+	public static final double MIN_LATITUDE = -90.0;
+	public static final double MAX_LATITUDE = 90.0;
+	
 
 
 	public void setForecastTimeFromString(String date){
@@ -38,6 +43,11 @@ public class Weather {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static boolean isValideLocation(Double latitude, Double longitude) {
+
+		return latitude <= MAX_LATITUDE && latitude >= MIN_LATITUDE && longitude >= MIN_LONGITUDE &&  longitude <= MAX_LONGITUDE;
 	}
 
 }
