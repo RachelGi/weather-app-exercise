@@ -13,6 +13,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Weather collection mapping
+ * Assumption :  For a given time and location (longitude and latitude), 
+ * there are no more than one document (the "data_unique_index" index is unique)
+ * @author Rachel Guigui
+ *
+ */
 @Document
 @Data
 @NoArgsConstructor
