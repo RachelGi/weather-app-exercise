@@ -30,23 +30,23 @@ public class WeatherForecastController {
 	 * returns the weather forecast in a specific location for a specific time
 	 * send {@link HttpStatus.BAD_REQUEST} for a wrong location and 
 	 * {@link HttpStatus.BAD_REQUEST} if no data was found for the given location
-	 * @param latitude needs to apply the location rule - see {@link Weather.isValideLocation}
-	 * @param longitude  needs to apply the location rule - see {@link Weather.isValideLocation}
+	 * @param lat needs to apply the location rule - see {@link Weather.isValideLocation}
+	 * @param lon  needs to apply the location rule - see {@link Weather.isValideLocation}
 	 * @param response 
 	 * @return the weather forecast in a specific location for a specific time
 	 * @throws IOException
 	 */
 	@GetMapping("/weather/data") 
-	private List<WeatherAtLocation> retrieveWeatherForecastByLocation(@RequestParam Double latitude, @RequestParam Double longitude, HttpServletResponse response ) throws IOException { 
-		if(!Weather.isValideLocation(latitude, longitude)) {
-			response.sendError(HttpStatus.BAD_REQUEST.value(), "Location "+ longitude + " " +  latitude + " not existing"); 
+	private List<WeatherAtLocation> retrieveWeatherForecastByLocation(@RequestParam Double lat, @RequestParam Double lon, HttpServletResponse response ) throws IOException { 
+		if(!Weather.isValideLocation(lat, lon)) {
+			response.sendError(HttpStatus.BAD_REQUEST.value(), "Location "+ lon + " " +  lat + " not existing"); 
 			return null;
 		}
 		List<WeatherAtLocation> weatherList = null; 
 		try {
-			weatherList = weatherService.retrieveWeathersAtLocation(longitude, latitude);
+			weatherList = weatherService.retrieveWeathersAtLocation(lon, lat);
 		} catch (NoDataFoundException e) {
-			response.sendError(HttpStatus.NOT_FOUND.value(), "No Weather forcast for location "+ + longitude + " " + latitude); //TODO check if NO_CONTENT
+			response.sendError(HttpStatus.NOT_FOUND.value(), "No Weather forcast for location "+ + lon + " " + lat); //TODO check if NO_CONTENT
 		}
 		return weatherList;
 	}
@@ -56,25 +56,25 @@ public class WeatherForecastController {
 	 * returns the max,min,avg weather data (from all the files) for a specific locatio
 	 * send {@link HttpStatus.BAD_REQUEST} for a wrong location and 
 	 * {@link HttpStatus.BAD_REQUEST} if no data was found for the given location
-	 * @param latitude needs to apply the location rule - see {@link Weather.isValideLocation}
-	 * @param longitude  needs to apply the location rule - see {@link Weather.isValideLocation}
+	 * @param lat needs to apply the location rule - see {@link Weather.isValideLocation}
+	 * @param lon  needs to apply the location rule - see {@link Weather.isValideLocation}
 	 * @param response 
 	 * @return the weather summarize in a specific location
 	 * @throws IOException
 	 */
 	
 	@GetMapping("/weather/summarize") 
-	private HashMap<SummarizeField,WeatherSummarize> retrieveWeatherForecastSummarizeByLocation(@RequestParam Double latitude, @RequestParam Double longitude,HttpServletResponse response) 
+	private HashMap<SummarizeField,WeatherSummarize> retrieveWeatherForecastSummarizeByLocation(@RequestParam Double lat, @RequestParam Double lon,HttpServletResponse response) 
 			throws IOException{
 		HashMap<SummarizeField,WeatherSummarize> summarizeWeather = null; 
-		if(!Weather.isValideLocation(latitude, longitude)) {
-			response.sendError(HttpStatus.BAD_REQUEST.value(), "Location "+ longitude + " " +  latitude + " not existing"); 
+		if(!Weather.isValideLocation(lat, lon)) {
+			response.sendError(HttpStatus.BAD_REQUEST.value(), "Location "+ lon + " " +  lat + " not existing"); 
 			return null;
 		}
 		try {
-			summarizeWeather = weatherService.retrieveSummarizeWeathersAtLocation(longitude, latitude);
+			summarizeWeather = weatherService.retrieveSummarizeWeathersAtLocation(lon, lat);
 		} catch (NoDataFoundException e) {
-			response.sendError(HttpStatus.NOT_FOUND.value(), "No Weather forcast for location "+ longitude + " " +  latitude); 
+			response.sendError(HttpStatus.NOT_FOUND.value(), "No Weather forcast for location "+ lon + " " +  lat); 
 		}
 		return summarizeWeather;
 	}
