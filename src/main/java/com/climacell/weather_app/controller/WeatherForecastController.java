@@ -46,7 +46,7 @@ public class WeatherForecastController {
 		try {
 			weatherList = weatherService.retrieveWeathersAtLocation(lon, lat);
 		} catch (NoDataFoundException e) {
-			response.sendError(HttpStatus.NOT_FOUND.value(), "No Weather forcast for location "+ + lon + " " + lat); //TODO check if NO_CONTENT
+			response.sendError(HttpStatus.NOT_FOUND.value(), "No Weather forcast for location "+ + lon + " " + lat); 
 		}
 		return weatherList;
 	}
