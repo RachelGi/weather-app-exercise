@@ -21,7 +21,7 @@ import com.climacell.weather_app.service.WeatherService;
 
 @RestController
 public class WeatherForecastController {
-	//TODO addon log, test
+	
 
 	@Autowired
 	private WeatherService weatherService;
